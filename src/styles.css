@@ -1,1 +1,47 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body{
+    background-color: var(--background-dark-800);
+    color: white;
+}
+
+*{
+    color: white !important;
+}
+
+:root{
+    --primary-color: hsl(220, 100%, 50%);
+
+    --background-dark-900: hsl(220, 20%, 5%);
+    --background-dark-800: hsl(220, 20%, 8%);
+    --background-dark-700: hsl(220, 20%, 13%);
+    --background-dark-600: hsl(220, 20%, 18%);
+    --background-dark-500: hsl(220, 20%, 23%);
+    --background-dark-400: hsl(220, 20%, 28%);
+    --background-dark-300: hsl(220, 20%, 33%);
+    --background-dark-200: hsl(220, 20%, 38%);
+    --background-dark-100: hsl(220, 20%, 43%);
+    --background-dark-50: hsl(220, 20%, 48%);    
+}
+
+input, select{
+    background-color: var(--background-dark-800);
+    color: white;
+    border: 1px solid var(--background-dark-700);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+input:focus, select:focus{
+    outline: none;
+    border: 1px solid var(--primary-color);
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

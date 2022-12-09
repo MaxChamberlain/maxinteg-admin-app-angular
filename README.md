@@ -1,27 +1,51 @@
-# MintgAdminAngular
+write a github md file for an app described as the following:
+written in angular with a GoLang backend
+lists all active projects and serves links to all relevant resources for each project (github, netlify, heroku, etc)
+has a task managing feature similar to monday.com
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.3.
+# Project Manager
 
-## Development server
+This project manager is a web application built with Angular for the front-end and GoLang for the backend. It allows users to manage and keep track of their projects in one central location.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- Get an overview of all your active projects in one place
+- Links to all relevant resources (Github, Netlify, Heroku, etc.) for each project
+- Task management feature, similar to monday.com, with options to assign tasks to other users, set deadlines, and track progress
+- Option to assign priority level to tasks
+- Ability to chat with other users within the app
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Setup
 
-## Build
+### Prerequisites
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- Node.js
+- GoLang
 
-## Running unit tests
+### Installation
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. Clone the repository:
 
-## Running end-to-end tests
+```
+git clone https://github.com/[username]/project-manager.git
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+2. Install the dependencies:
 
-## Further help
+```
+npm install
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+3. Compile the GoLang backend:
+
+```
+go build
+```
+
+4. Run the application:
+
+```
+node server.js
+```
+
+5. Visit the application in your browser at `http://localhost:3000`
