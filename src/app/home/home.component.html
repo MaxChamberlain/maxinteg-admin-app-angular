@@ -1,0 +1,47 @@
+<main class="flex justify-between w-full">
+    <section class="w-5/6 p-2 flex flex-col gap-6 justify-center bg-[var(--background-dark-700)] pb-12">
+        <header class="text-2xl w-full flex justify-between bg-zinc-800 p-2 rounded items-center">
+            <span>
+                Projects
+            </span>
+            <a [routerLink]="['/project/add']">
+                <div class="bg-[var(--primary-color)] p-1 rounded cursor-pointer text-base">
+                    + New Project
+                </div>
+            </a>
+        </header>
+        <div *ngIf="projectsList" class="w-full flex flex-col">
+            <div *ngFor="let project of projectsList" class="w-full flex justify-between bg-zinc-800 p-2 rounded items-center mb-6 shadow-md" matTooltip="{{project?.project_priority ? proper(project.project_priority) + ' Priority' : ''}}">
+                <div>
+                    <span>{{ project.project_name }}</span>
+                    <br />
+                    <span class="font-extralight opacity-80">{{ project.project_description }}</span>
+                </div>
+                <div class="grid grid-cols-2">
+                    <div>
+                        <button mat-button [matMenuTriggerFor]="github" matTooltip="GitHub Repositories">
+                            <mat-menu #github="matMenu" class="bg-zinc-800">
+                                <a href="{{project.project_front_end_github}}" target="_blank"><button mat-menu-item>Front End</button></a>
+                                <a href="{{project.project_back_end_github}}" target="_blank"><button mat-menu-item>Back End</button></a>
+                            </mat-menu>
+                            <div class="cursor-pointer" id="github-link-image">
+                                <img src="assets/githubLogo.svg" alt="github logo" class="w-6 h-6">
+                            </div>
+                        </button>
+                    </div>
+                    <div>
+                        <button mat-button [matMenuTriggerFor]="host" matTooltip="Hosting Services">
+                            <mat-menu #host="matMenu" class="bg-zinc-800">
+                                <a href="{{project.project_front_end_hosting_url}}" target="_blank"><button mat-menu-item>Front End {{project?.project_front_end_hosting_provider ? '(' + project?.project_front_end_hosting_provider + ')' : ''}}</button></a>
+                                <a href="{{project.project_back_end_hosting_url}}" target="_blank"><button mat-menu-item>Back End {{project?.project_back_end_hosting_provider ? '(' + project?.project_back_end_hosting_provider + ')' : ''}}</button></a>
+                            </mat-menu>
+                            <div class="cursor-pointer" id="github-link-image">
+                                <img src="assets/cloudIcon.svg" alt="github logo" class="w-6 h-6">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

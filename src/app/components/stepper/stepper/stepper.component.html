@@ -1,0 +1,11 @@
+<section class="w-full flex justify-between p-6 text-center relative">
+    <div *ngFor="let step of steps; let i = index" class="h-12">
+        <span class="font-extralight text-{{lessThan(i) ? 'text-zinc-300' : '[var(--primary-color)] brightness-200'}}">{{ step.label }}</span>
+        <svg>
+            <circle cx="50%" cy="10" r="6" stroke-width="3" fill="#ccc" *ngIf="lessThan(i)" />
+            <circle cx="50%" cy="10" r="6" stroke-width="3" fill="var(--primary-color)" *ngIf="!lessThan(i)" />
+        </svg>
+    </div>
+</section>
+
+<ng-content></ng-content>
