@@ -1,0 +1,100 @@
+<main class="flex justify-between flex-col w-full">
+    <header class="text-2xl w-full flex justify-between p-2 rounded items-center">
+        <span>
+            New Project
+        </span>
+    </header>
+    <section class="w-full p-2 flex flex-col justify-center bg-[var(--background-dark-700)]">
+        <form [formGroup]="addProjectForm" (ngSubmit)="onSubmit()" class="p-6">
+
+            <!-- <app-stepper [steps]="steps" [stepIndex]="stepIndex">
+
+                <div *ngIf="this.stepIndex === 0"> -->
+                    
+                    <div class="flex justify-between">
+                        <div class="flex flex-col">
+                            <label for="project_name">Project Name</label>
+                            <input type="text" formControlName="project_name" id="project_name" />
+                        </div>
+                        <div class="flex flex-col">
+                          <label for="project_start_date">Project Start Date</label>
+                          <input type="date" formControlName="project_start_date" id="project_start_date">
+                        </div>
+                        <div class="flex flex-col">
+                          <label for="project_end_date">Project End Date</label>
+                          <input type="date" formControlName="project_end_date" id="project_end_date">
+                        </div>
+                    </div>
+                      
+                    <div class="flex flex-col">
+                        <label for="project_description">Project Description</label>
+                        <input type="text" formControlName="project_description" id="project_description" />
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <label for="project_status">Project Priority</label>
+                        <select type="text" formControlName="project_priority" id="project_priority">
+                            <option value="very low">Very Low</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="very high">Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="project_front_end_github">Project Front End Github</label>
+                        <input type="text" formControlName="project_front_end_github" id="project_front_end_github" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="project_back_end_github">Project Back End Github</label>
+                        <input type="text" formControlName="project_back_end_github" id="project_back_end_github" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="project_front_end_url">Project Front End Url</label>
+                        <input type="text" formControlName="project_front_end_url" id="project_front_end_url" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="project_back_end_url">Project Back End Url</label>
+                        <input type="text" formControlName="project_back_end_url" id="project_back_end_url" />
+                    </div>              
+                    <div class="flex flex-col">
+                      <label for="project_front_end_hosting_provider">Project Front End Hosting URL</label>
+                      <input type="text" formControlName="project_front_end_hosting_url" id="project_front_end_hosting_provider" />
+                    </div>
+                    <div class="flex flex-col">
+                      <label for="project_back_end_hosting_provider">Project Back End Hosting URL</label>
+                      <input type="text" formControlName="project_back_end_hosting_url" id="project_back_end_hosting_provider" />
+                    </div>                 
+                    <div class="flex flex-col">
+                      <label for="project_front_end_hosting_provider">Project Front End Hosting Provider</label>
+                      <input type="text" formControlName="project_front_end_hosting_provider" id="project_front_end_hosting_provider" />
+                    </div>
+                    <div class="flex flex-col">
+                      <label for="project_back_end_hosting_provider">Project Back End Hosting Provider</label>
+                      <input type="text" formControlName="project_back_end_hosting_provider" id="project_back_end_hosting_provider" />
+                    </div>   
+                    <br>
+                    <div class="flex flex-col">
+                        <button class="bg-[var(--primary-color)] text-zinc-300 p-2 rounded" type="submit">Submit</button>
+                    </div>
+
+                <!-- </div> -->
+
+                <!-- <div *ngIf="this.stepperComponent.stepIndex === 1">
+                    <div class="flex flex-col">
+                        <label for="project_name">Project Name</label>
+                        <input type="text" formControlName="project_name" id="project_name" />
+                    </div>
+                </div>
+
+            </app-stepper> -->
+        </form>
+        <!-- <div class="flex justify-between mt-12 p-6">
+            <button class="bg-zinc-600 text-zinc-300 p-2 rounded" (click)="prevStep()" *ngIf="!lessThan(1)">Previous</button>
+            <button class="bg-zinc-600 text-zinc-300 p-2 rounded-xl opacity-50" *ngIf="lessThan(1)">Previous</button>
+            <button class="bg-[var(--primary-color)] text-zinc-300 p-2 rounded" (click)="nextStep()" *ngIf="!greaterThan(steps.length - 2)">Next</button>
+            <button class="bg-zinc-600 text-zinc-300 p-2 rounded-xl opacity-50" *ngIf="greaterThan(steps.length - 2)">Next</button>
+        </div> -->
+    </section>
+</main>
