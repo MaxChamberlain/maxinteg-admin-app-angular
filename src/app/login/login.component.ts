@@ -20,7 +20,9 @@ export class LoginComponent {
 
   onSubmit() {
     this.loginService.login(this.loginForm.value).subscribe((data: any) => {
-      console.log(data);
+      if(data){
+        window.location.href="/home"
+      }
     });
   }
   

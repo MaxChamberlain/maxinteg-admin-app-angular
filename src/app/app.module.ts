@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from './environments/environment';
 
 /*************  Components  **************/
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { AppRoutingModule } from './app.router';
 
 /*************  Feature Components  **************/
 import { StepperComponent } from './components/stepper/stepper/stepper.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 /*************  MUI  **************/
 import { MatMenuModule } from '@angular/material/menu';
@@ -27,7 +29,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ProjectPageComponent } from './project/project-page/project-page.component';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketService } from './services/socket.service';
+
+const config: SocketIoConfig = {
+	url: environment.socketUrl,
+	options: {
+	}
+}
 
 @NgModule({
   declarations: [
@@ -36,7 +50,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     RegisterComponent,
     HomeComponent,
     AddProjectComponent,
-    StepperComponent
+    StepperComponent,
+    ToolbarComponent,
+    ProjectPageComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +65,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     BrowserAnimationsModule,
     MatExpansionModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     AuthGuard, 
@@ -57,6 +77,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     LoginService,
     ProjectService,
     StepperComponent,
+    SocketService
   ],
   bootstrap: [AppComponent]
 })

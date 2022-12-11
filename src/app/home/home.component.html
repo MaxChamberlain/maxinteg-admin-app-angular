@@ -1,23 +1,37 @@
 <main class="flex justify-between w-full">
-    <section class="w-5/6 p-2 flex flex-col gap-6 justify-center bg-[var(--background-dark-700)] pb-12">
-        <header class="text-2xl w-full flex justify-between bg-zinc-800 p-2 rounded items-center">
-            <span>
-                Projects
-            </span>
-            <a [routerLink]="['/project/add']">
-                <div class="bg-[var(--primary-color)] p-1 rounded cursor-pointer text-base">
-                    + New Project
-                </div>
-            </a>
-        </header>
+    <section class="w-5/6 p-2 flex flex-col gap-6 justify-start bg-[var(--background-dark-700)] pb-12 overflow-y-scroll absolute top-[65px] bottom-0 left-0 pt-6">
+        <mat-spinner *ngIf="loading" style="margin: auto;" color="secondary"></mat-spinner>
         <div *ngIf="projectsList" class="w-full flex flex-col">
-            <div *ngFor="let project of projectsList" class="w-full flex justify-between bg-zinc-800 p-2 rounded items-center mb-6 shadow-md" matTooltip="{{project?.project_priority ? proper(project.project_priority) + ' Priority' : ''}}">
+            <div *ngFor="let project of projectsList" class="w-full flex justify-between p-2 rounded items-center mb-6 shadow-md bg-zinc-800 {{ project?.status === 'active' ?  'bg-zinc-800' :  'bg-zinc-600 opacity-25' }} hover:brightness-125" matTooltip="{{project?.project_priority ? proper(project.project_priority) + ' Priority' : ''}}">
                 <div>
                     <span>{{ project.project_name }}</span>
                     <br />
                     <span class="font-extralight opacity-80">{{ project.project_description }}</span>
                 </div>
-                <div class="grid grid-cols-2">
+                <div class="flex jusify-end">
+                    <a [routerLink]="'/project/' + project.project_id">
+                        <button mat-button>
+                            <mat-icon>menu</mat-icon> Todo List
+                        </button>
+                    </a>
+                    <div>
+                        <button mat-button [matMenuTriggerFor]="opts">
+                            <mat-menu #opts="matMenu" class="bg-zinc-800">
+                                <button mat-menu-item>
+                                    Change Status
+                                </button>
+                                <button mat-menu-item>
+                                    Edit
+                                </button>
+                                <button mat-menu-item style="border: 1px solid hsl(0, 100%, 65%); margin: 0.5rem; width: calc(100% - 1rem); border-radius: 5px; color: hsl(0, 100%, 65%);">
+                                    Delete
+                                </button>
+                            </mat-menu>
+                            <div class="cursor-pointer" id="github-link-image">
+                                Quick Options
+                            </div>
+                        </button>
+                    </div>
                     <div>
                         <button mat-button [matMenuTriggerFor]="github" matTooltip="GitHub Repositories">
                             <mat-menu #github="matMenu" class="bg-zinc-800">
@@ -43,5 +57,17 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section class="absolute right-0 w-1/6 top-[65px] bottom-0 p-4 gap-y-4 flex flex-col text-center">
+        <header class="text-2xl w-full flex justify-between bg-zinc-800 p-2 rounded items-center">
+            <span>
+                Projects
+            </span>
+        </header>
+        <a [routerLink]="['/project/add']">
+            <div class="bg-[var(--primary-color)] p-1 rounded cursor-pointer text-base">
+                + New Project
+            </div>
+        </a>
     </section>
 </main>

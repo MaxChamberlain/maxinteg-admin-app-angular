@@ -1,0 +1,204 @@
+<div class="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center" *ngIf="loading">
+    <mat-spinner style="margin: auto;" color="secondary"></mat-spinner>
+</div>
+<section class="flex w-full justify-end p-6 gap-x-2">
+    <button mat-button [style]="'width: 6rem; background: transparent; border: 1px solid white; border-radius: 5px; '">Cancel</button>
+    <button mat-button [style]="'width: 6rem; background-color: ' + ('hsl(220,100%,60%)')" (click)="setNewTasks()">Save</button>
+</section>
+<section *ngIf="!this.loading">
+    <header class="p-6 w-full">
+        <div class="w-full flex justify-between p-2 rounded items-center mb-6 shadow-md hover:brightness-125" style="background-color: hsl(220, 25%, 15%)">
+            <div>
+                <span class='text-xl'>{{ projectDetails.get('project_name') }}</span>
+            </div>
+            <div class="flex jusify-end">
+                <div>
+                    <button mat-button [matMenuTriggerFor]="opts">
+                        <mat-menu #opts="matMenu" class="bg-zinc-800">
+                            <button mat-menu-item>
+                                Change Status
+                            </button>
+                            <button mat-menu-item>
+                                Edit
+                            </button>
+                            <button mat-menu-item style="background-color: hsl(0, 100%, 65%); margin: 0.5rem; width: calc(100% - 1rem); border-radius: 5px; color: hsl(0, 100%, 65%);">
+                                Delete
+                            </button>
+                        </mat-menu>
+                        <div class="cursor-pointer" id="github-link-image">
+                            Quick Options
+                        </div>
+                    </button>
+                </div>
+                <div>
+                    <button mat-button [matMenuTriggerFor]="github" matTooltip="GitHub Repositories">
+                        <mat-menu #github="matMenu" class="bg-zinc-800">
+                            <a href="{{projectDetails.get('project_front_end_github')}}" target="_blank"><button mat-menu-item>Front End</button></a>
+                            <a href="{{projectDetails.get('project_back_end_github')}}" target="_blank"><button mat-menu-item>Back End</button></a>
+                        </mat-menu>
+                        <div class="cursor-pointer" id="github-link-image">
+                            <img src="assets/githubLogo.svg" alt="github logo" class="w-6 h-6">
+                        </div>
+                    </button>
+                </div>
+                <div>
+                    <button mat-button [matMenuTriggerFor]="host" matTooltip="Hosting Services">
+                        <mat-menu #host="matMenu" class="bg-zinc-800">
+                            <a href="{{projectDetails.get('project_front_end_hosting_url')}}" target="_blank"><button mat-menu-item>Front End {{projectDetails.get('project_front_end_hosting_provider') ? '(' + projectDetails.get('project_front_end_hosting_provider') + ')' : ''}}</button></a>
+                            <a href="{{projectDetails.get('project_back_end_hosting_url')}}" target="_blank"><button mat-menu-item>Back End {{projectDetails.get('project_back_end_hosting_provider') ? '(' + projectDetails.get('project_back_end_hosting_provider') + ')' : ''}}</button></a>
+                        </mat-menu>
+                        <div class="cursor-pointer" id="github-link-image">
+                            <img src="assets/cloudIcon.svg" alt="github logo" class="w-6 h-6">
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+</section>
+
+<section class="p-6 w-full">
+    <table class="w-[99%] m-auto">
+        <thead>
+            <tr>
+                <th class="w-3/4">Task Description</th>
+                <th class="status_col">Task Status</th>
+                <th class="priority_col">Task Priority</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let item of taskItems; let i as index">
+            <tr>
+                <td class="flex gap-x-0.5 w-full">
+                    <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: #' + getSideColor(item.task_id)"></div>
+                    <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
+                    <button style="width: 2.2rem" (click)="newSubtask(item)">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem;; border-radius: 5px;" matTooltip="Add a subtask">add_circle_outline</mat-icon>
+                    </button>
+                </td>
+                <td class="status_col">
+                    <select [(ngModel)]="item.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">
+                        <option value="None">None</option>
+                        <option value="Active">Active</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Awaiting Review">Awaiting Review</option>
+                        <option value="Complete">Complete</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </td>
+                <td class="priority_col">
+                    <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem;; border-radius: 5px;">
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(1, item.task_priority)" (click)="item.task_priority = 1">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(2, item.task_priority)" (click)="item.task_priority = 2">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(3, item.task_priority)" (click)="item.task_priority = 3">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(4, item.task_priority)" (click)="item.task_priority = 4">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(5, item.task_priority)" (click)="item.task_priority = 5">star</mat-icon>
+                    </div>
+                </td>
+                <td style="width: 2.2rem">
+                    <button style="width: 2.2rem" (click)="deleteTask(item.task_id)">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem; color: white; border-radius: 5px;" matTooltip="Delete">delete_outline</mat-icon>
+                    </button>
+                </td>
+            <tr *ngFor="let subitem of item.subtasks">
+                <td class="flex gap-x-0.5 w-full">
+                    <div style="width: 2.2rem" class="flex items-center justify-center"> 
+                        |
+                    </div>
+                    <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: #' + getSideColor(item.task_id)"></div>
+                    <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" style="background-color: hsl(220, 25%, 20%); border-radius: 0 5px 5px 0;"></textarea>
+                </td>
+                <td class="status_col">
+                    <select [(ngModel)]="subitem.subtask_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(subitem.subtask_status)">
+                        <option value="None">None</option>
+                        <option value="Active">Active</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Awaiting Review">Awaiting Review</option>
+                        <option value="Complete">Complete</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </td>
+                <td class="priority_col">
+                    <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem; border-radius: 5px;">
+                        <mat-icon class="cursor-pointer star" [style]="getStarColor(1, subitem.subtask_priority)" (click)="subitem.subtask_priority = 1">star</mat-icon>
+                        <mat-icon class="cursor-pointer star" [style]="getStarColor(2, subitem.subtask_priority)" (click)="subitem.subtask_priority = 2">star</mat-icon>
+                        <mat-icon class="cursor-pointer star" [style]="getStarColor(3, subitem.subtask_priority)" (click)="subitem.subtask_priority = 3">star</mat-icon>
+                        <mat-icon class="cursor-pointer star" [style]="getStarColor(4, subitem.subtask_priority)" (click)="subitem.subtask_priority = 4">star</mat-icon>
+                        <mat-icon class="cursor-pointer star" [style]="getStarColor(5, subitem.subtask_priority)" (click)="subitem.subtask_priority = 5">star</mat-icon>
+                    </div>
+                </td>
+                <td style="width: 2.2rem">
+                    <button style="width: 2.2rem" (click)="deleteSubTask(item.task_id, subitem.subtask_id)">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem; color: white; border-radius: 5px;" matTooltip="Delete">delete_outline</mat-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        
+        <tbody>
+            <tr [class]="(this.getNewTaskActivated() ? 'opacity-100 after:opacity-100' : 'opacity-50 after:opacity-50')">
+                <td class="flex gap-x-0.5 w-full">
+                    <textarea placeholder="Describe a new task here" [(ngModel)]="this.newTask.task_description" style="background-color: hsl(220, 25%, 15%); border-radius: 5px;"></textarea>
+                    <button style="width: 2.2rem" (click)="this.getNewTaskActivated() ? newSubtask(this.newTask) : undefined">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem; border-radius: 5px;" matTooltip="Add a subtask">add_circle_outline</mat-icon>
+                    </button>
+                </td>
+                <td class="status_col">
+                    <select [(ngModel)]="this.newTask.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(this.newTask.task_status)" matTooltip="Status">
+                        <option value="None">None</option>
+                        <option value="Active">Active</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Awaiting Review">Awaiting Review</option>
+                        <option value="Complete">Complete</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </td>
+                <td class="priority_col">
+                    <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem; border-radius: 5px;">
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(1, this.newTask.task_priority)" (click)="this.newTask.task_priority = 1">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(2, this.newTask.task_priority)" (click)="this.newTask.task_priority = 2">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(3, this.newTask.task_priority)" (click)="this.newTask.task_priority = 3">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(4, this.newTask.task_priority)" (click)="this.newTask.task_priority = 4">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(5, this.newTask.task_priority)" (click)="this.newTask.task_priority = 5">star</mat-icon>
+                    </div>
+                </td>
+                <td style="width: 2.2rem">
+                    <button style="width: 2.2rem" (click)="this.getNewTaskActivated() ? deleteTask(this.newTask.task_id) : undefined">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem; color: white; border-radius: 5px;" matTooltip="Delete">delete_outline</mat-icon>
+                    </button>
+                </td>
+            <tr *ngFor="let subitem of this.newTask.subtasks">
+                <td class="flex gap-x-0.5 w-full">
+                    <div style="width: 2.2rem" class="flex items-center justify-center"> 
+                        |
+                    </div>
+                    <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" style="background-color: hsl(220, 25%, 20%); border-radius: 5px;"></textarea>
+                </td>
+                <td class="status_col">
+                    <select [(ngModel)]="subitem.subtask_status" [style]="'background-color: ' + getStatusColor(subitem.subtask_status)">
+                        <option value="None">None</option>
+                        <option value="Active">Active</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Awaiting Review">Awaiting Review</option>
+                        <option value="Complete">Complete</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </td>
+                <td class="priority_col">
+                    <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem; border-radius: 5px;">
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(1, subitem.subtask_priority)" (click)="subitem.subtask_priority = 1">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(2, subitem.subtask_priority)" (click)="subitem.subtask_priority = 2">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(3, subitem.subtask_priority)" (click)="subitem.subtask_priority = 3">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(4, subitem.subtask_priority)" (click)="subitem.subtask_priority = 4">star</mat-icon>
+                        <mat-icon class="cursor-pointer" [style]="getStarColor(5, subitem.subtask_priority)" (click)="subitem.subtask_priority = 5">star</mat-icon>
+                    </div>
+                </td>
+                <td style="width: 2.2rem">
+                    <button style="width: 2.2rem" (click)="this.getNewTaskActivated() ? deleteSubTask(this.newTask.task_id, subitem.subtask_id) : undefined">
+                        <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem; color: white; border-radius: 5px;" matTooltip="Delete">delete_outline</mat-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</section>

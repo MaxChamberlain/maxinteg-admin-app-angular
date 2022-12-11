@@ -25,7 +25,7 @@ export class ApiService {
     }
 
     checkAuth() {
-        return this.http.post(`${environment.api}/user/by-token`, {}, {
+        return this.http.get(`${environment.api}/user`, {
             withCredentials: true,
         }).pipe(
             map((data: any) => {

@@ -1,0 +1,19 @@
+*{
+    transition: opacity 0.1s;
+}
+
+tbody{
+    position: relative;
+}
+
+tbody:before {
+    content: '';
+    display: block;
+    height: 2rem;
+}
+
+.material-icons.color_green { color: #00FF00; }
+
+.star:hover{
+    -webkit-text-fill-color:#ffff00;
+}

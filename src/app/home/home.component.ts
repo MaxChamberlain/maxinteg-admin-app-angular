@@ -10,6 +10,8 @@ export class HomeComponent {
   constructor(
     private projectService: ProjectService,
   ) {}
+
+  loading = true;
   
   projectsList: [{
     project_id: string;
@@ -26,12 +28,14 @@ export class HomeComponent {
     project_back_end_hosting_url: string;
     project_front_end_hosting_provider: string;
     project_back_end_hosting_provider: string;
+    status: string;
   }] | undefined
 
   ngOnInit() {
     this.projectService.getProjects()
       .subscribe((projectsList: any) => {
         this.projectsList = projectsList.sort((a: any, b: any) => {
+          this.loading = false
           return a.updated_at < b.updated_at ? 1 : -1;
         });
       });

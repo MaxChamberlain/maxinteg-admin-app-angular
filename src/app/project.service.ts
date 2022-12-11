@@ -7,13 +7,19 @@ export class ProjectService {
     constructor(private http: HttpClient) { }
 
     createProject(data: object) {
-        return this.http.post(`${environment.api}/project/create`, data, {
+        return this.http.put(`${environment.api}/project`, data, {
             withCredentials: true,
         }).pipe()
     }
 
     getProjects(){
-        return this.http.get(`${environment.api}/project/list`, {
+        return this.http.get(`${environment.api}/project`, {
+            withCredentials: true,
+        }).pipe()
+    }
+
+    getProject(id: string){
+        return this.http.get(`${environment.api}/project/${id}`, {
             withCredentials: true,
         }).pipe()
     }
