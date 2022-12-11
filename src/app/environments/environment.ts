@@ -11,6 +11,6 @@ if(!api){
 
 export const environment = {
     production: false,
-    api: api || 'https://tracking-app-node-socket.herokuapp.com',
-    socketUrl: socket || 'https://tracking-app-go-server.herokuapp.com',
+    api: api || 'https://tracking-app-go-server.herokuapp.com',
+    socketUrl: socket || 'https://tracking-app-node-socket.herokuapp.com',
 }
