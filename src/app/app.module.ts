@@ -77,7 +77,7 @@ const config: SocketIoConfig = {
     LoginService,
     ProjectService,
     StepperComponent,
-    SocketService
+    SocketService,
   ],
   bootstrap: [AppComponent]
 })
