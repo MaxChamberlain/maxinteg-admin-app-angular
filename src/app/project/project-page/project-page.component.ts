@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../project.service';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/app/services/socket.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-page',
@@ -16,6 +17,8 @@ export class ProjectPageComponent implements OnInit {
   ) { }
 
   loading: boolean = true;
+
+  openSubtasks: string[] = [];
   
   projectDetails: Map<string, string> = new Map( Object.entries({
     created_at: '',
@@ -51,6 +54,19 @@ export class ProjectPageComponent implements OnInit {
       }],
     }] | undefined
 
+    completedItems: [{
+        task_id: string,
+        task_description: string,
+        task_priority: number,
+        task_status: string,
+        subtasks: undefined | [{
+          subtask_id: string,
+          subtask_description: string,
+          subtask_priority: number,
+          subtask_status: string,
+        }],
+      }] | undefined
+
     newTask: {
       task_id: string,
       task_description: string,
@@ -83,7 +99,8 @@ export class ProjectPageComponent implements OnInit {
     }
     this.socketService.listen().subscribe((data: any) => {
       if(data){
-        this.taskItems = data
+        this.taskItems = data.filter((task: any) => task.task_status !== 'Complete')
+        this.completedItems = data.filter((task: any) => task.task_status === 'Complete')
       }
     })
     this.socketService.emit('tasks', this.id)
@@ -112,6 +129,8 @@ export class ProjectPageComponent implements OnInit {
         status === 'Awaiting Review' ? 
           'hsl(45, 110%, 35%)' : 
         status === 'None' ? 
+          'hsl(220, 25%, 15%)' : 
+        status === 'Complete' ? 
           'hsl(220, 25%, 15%)' : 
         'hsl(0, 100%, 60%)' : 
       'hsl(220, 25%, 15%)'
@@ -146,7 +165,7 @@ export class ProjectPageComponent implements OnInit {
       })
     }else{
       task.subtasks = [{
-        subtask_id: '',
+        subtask_id: Math.random().toString(36).slice(2, 9),
         subtask_description: '',
         subtask_priority: 1,
         subtask_status: 'None',
@@ -161,21 +180,30 @@ export class ProjectPageComponent implements OnInit {
 
   deleteTask(id: string){
     const newTaskItems: any = this.taskItems?.filter((task: any) => task.task_id !== id)
-    console.log(newTaskItems)
     this.taskItems = newTaskItems
   }
 
-  deleteSubTask(task: any, id: string){
-    const newSubtasks: any = task.subtasks?.filter((subtask: any) => subtask.subtask_id !== id)
-    task.subtasks = newSubtasks
+  deleteSubTask(task_id: any, id: string){
+    const newSubtasks: any = this.taskItems?.find((task: any) => task.task_id === task_id)?.subtasks?.filter((subtask: any) => subtask.subtask_id !== id)
+    const newTaskItems: any = this.taskItems?.map((task: any) => {
+      if(task.task_id === task_id){
+        task.subtasks = newSubtasks
+      }
+      return task
+    })
+    this.taskItems = newTaskItems
   }
 
   getStarColor(index: number, priority: number){
     return priority >= index ? '-webkit-text-fill-color:yellow' : '-webkit-text-fill-color:rgba(0,0,0,0.2)'
   }
 
-  getSideColor(seed: string){
-    let color = seed.split('').map(char => char.charCodeAt(0).toString(16)).join('').slice(0,6)
-    return color
+  getSideColor(str: string){
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let hue = Math.abs(hash % 360);
+    return `hsl(${hue}, 100%, 50%)`;
   }
 }

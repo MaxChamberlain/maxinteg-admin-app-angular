@@ -1,13 +1,10 @@
-<mat-toolbar style="background-color: var(--primary-color);">
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-        <mat-icon>menu</mat-icon>
-    </button>
-   <span>My App</span>
-   <span class="example-spacer"></span>
-   <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
-   </button>
-   <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
-  </button>
-</mat-toolbar>
+    <mat-drawer #drawer class="example-sidenav" mode="side" [opened]="true">
+        <section class="flex flex-col w-[60px] gap-y-6 items-center pt-3">
+            <a [routerLink]="['/home']">
+                <mat-icon class="mat-icon" matTooltip="Home">home</mat-icon>
+            </a>
+        </section>
+        <a (click)="this.logout()" class="absolute bottom-1 left-[12.5px]">
+            <mat-icon class="mat-icon" matTooltip="Log Out">logout</mat-icon>
+        </a>
+    </mat-drawer>

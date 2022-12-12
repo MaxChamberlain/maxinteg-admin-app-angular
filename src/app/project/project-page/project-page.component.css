@@ -12,6 +12,12 @@ tbody:before {
     height: 2rem;
 }
 
+.completed:before {
+    content: '';
+    display: block;
+    height: 0;
+}
+
 .material-icons.color_green { color: #00FF00; }
 
 .star:hover{

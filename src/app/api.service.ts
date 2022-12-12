@@ -37,4 +37,10 @@ export class ApiService {
             })
         )
     }
+
+    logout() {
+        return this.http.get(`${environment.api}/user/logout`, {
+            withCredentials: true,
+        })
+    }
 }

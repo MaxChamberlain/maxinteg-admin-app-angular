@@ -34,10 +34,14 @@ export class HomeComponent {
   ngOnInit() {
     this.projectService.getProjects()
       .subscribe((projectsList: any) => {
-        this.projectsList = projectsList.sort((a: any, b: any) => {
-          this.loading = false
-          return a.updated_at < b.updated_at ? 1 : -1;
-        });
+        if(projectsList){
+          projectsList.sort((a: any, b: any) => {
+            this.loading = false
+            return a.updated_at < b.updated_at ? 1 : -1;
+          });
+        }
+        this.projectsList = projectsList
+        this.loading = false
       });
   }
 

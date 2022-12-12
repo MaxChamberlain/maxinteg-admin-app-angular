@@ -17,10 +17,13 @@ import { ApiService } from './api.service';
 import { LoginService } from './login/login.service';
 import { ProjectService } from './project.service';
 import { AppRoutingModule } from './app.router';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketService } from './services/socket.service';
 
 /*************  Feature Components  **************/
 import { StepperComponent } from './components/stepper/stepper/stepper.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { ProjectPageComponent } from './project/project-page/project-page.component';
 
 /*************  MUI  **************/
 import { MatMenuModule } from '@angular/material/menu';
@@ -31,11 +34,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { ProjectPageComponent } from './project/project-page/project-page.component';
-
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SocketService } from './services/socket.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 const config: SocketIoConfig = {
 	url: environment.socketUrl,
@@ -69,7 +69,8 @@ const config: SocketIoConfig = {
     MatToolbarModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    MatSidenavModule
   ],
   providers: [
     AuthGuard, 
