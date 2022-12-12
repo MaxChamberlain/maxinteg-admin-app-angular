@@ -47,6 +47,5 @@ export class SocketService {
 
 	setNewTasks(projectId: any, tasks: any) {
 		this.socket.emit('setTasks', {id: projectId, tasks: tasks})
-		.pipe(debounceTime(1000));
 	  }
 }

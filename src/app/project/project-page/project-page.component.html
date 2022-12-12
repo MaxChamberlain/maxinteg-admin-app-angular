@@ -4,10 +4,6 @@
 <main class="flex w-full">
     <div class="w-[60px]"></div>
     <div class="w-full">
-        <section class="flex w-full justify-end p-6 gap-x-2">
-            <button mat-button [style]="'width: 6rem; background: transparent; border: 1px solid white; border-radius: 5px; '">Cancel</button>
-            <button mat-button [style]="'width: 6rem; background-color: ' + ('hsl(220,100%,60%)')" (click)="setNewTasks()">Save</button>
-        </section>
         <section *ngIf="!this.loading">
             <header class="p-6 w-full">
                 <div class="w-full flex justify-between p-2 rounded items-center mb-6 shadow-md hover:brightness-125" style="background-color: hsl(220, 25%, 15%)">
@@ -69,17 +65,17 @@
                         <th class="priority_col">Task Priority</th>
                     </tr>
                 </thead>
-                <tbody *ngFor="let item of taskItems; let i as index" [class]="(item.task_status !== 'Complete' ? 'opacity-100 after:opacity-100' : 'opacity-50 after:opacity-50')">
+                <tbody *ngFor="let item of taskItems; let i as index;" [class]="(item.task_status !== 'Complete' ? 'opacity-100 after:opacity-100' : 'opacity-50 after:opacity-50')" @listAnimation>
                     <tr>
                         <td class="flex gap-x-0.5 w-full">
                             <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: ' + getSideColor(item.task_id)"></div>
-                            <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
+                            <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
                             <button style="width: 2.2rem" (click)="newSubtask(item)">
                                 <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem;; border-radius: 5px;" matTooltip="Add a subtask">add_circle_outline</mat-icon>
                             </button>
                         </td>
                         <td class="status_col">
-                            <select [(ngModel)]="item.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">
+                            <select [(ngModel)]="item.task_status" [ngModelOptions]="{ updateOn: 'change' }" (ngModelChange)="setNewTasks()" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">
                                 <option value="None">None</option>
                                 <option value="Active">Active</option>
                                 <option value="In Progress">In Progress</option>
@@ -90,11 +86,11 @@
                         </td>
                         <td class="priority_col">
                             <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem;; border-radius: 5px;">
-                                <mat-icon class="cursor-pointer" [style]="getStarColor(1, item.task_priority)" (click)="item.task_priority = 1">star</mat-icon>
-                                <mat-icon class="cursor-pointer" [style]="getStarColor(2, item.task_priority)" (click)="item.task_priority = 2">star</mat-icon>
-                                <mat-icon class="cursor-pointer" [style]="getStarColor(3, item.task_priority)" (click)="item.task_priority = 3">star</mat-icon>
-                                <mat-icon class="cursor-pointer" [style]="getStarColor(4, item.task_priority)" (click)="item.task_priority = 4">star</mat-icon>
-                                <mat-icon class="cursor-pointer" [style]="getStarColor(5, item.task_priority)" (click)="item.task_priority = 5">star</mat-icon>
+                                <mat-icon class="cursor-pointer" [style]="getStarColor(1, item.task_priority)" (click)="item.task_priority = 1; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer" [style]="getStarColor(2, item.task_priority)" (click)="item.task_priority = 2; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer" [style]="getStarColor(3, item.task_priority)" (click)="item.task_priority = 3; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer" [style]="getStarColor(4, item.task_priority)" (click)="item.task_priority = 4; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer" [style]="getStarColor(5, item.task_priority)" (click)="item.task_priority = 5; setNewTasks()">star</mat-icon>
                             </div>
                         </td>
                         <td style="width: 2.2rem">
@@ -108,10 +104,10 @@
                                 |
                             </div>
                             <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: ' + getSideColor(item.task_id)"></div>
-                            <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" style="background-color: hsl(220, 25%, 20%); border-radius: 0 5px 5px 0;"></textarea>
+                            <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" style="background-color: hsl(220, 25%, 20%); border-radius: 0 5px 5px 0;"></textarea>
                         </td>
                         <td class="status_col">
-                            <select [(ngModel)]="subitem.subtask_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(subitem.subtask_status)">
+                            <select [(ngModel)]="subitem.subtask_status" [ngModelOptions]="{ updateOn: 'change' }" (ngModelChange)="setNewTasks()" [style]="'border-radius: 5px; background-color: ' + getStatusColor(subitem.subtask_status)">
                                 <option value="None">None</option>
                                 <option value="Active">Active</option>
                                 <option value="In Progress">In Progress</option>
@@ -122,11 +118,11 @@
                         </td>
                         <td class="priority_col">
                             <div class="flex justify-around items-center" style="background-color: hsl(220, 25%, 15%); height: 2.2rem; border-radius: 5px;">
-                                <mat-icon class="cursor-pointer star" [style]="getStarColor(1, subitem.subtask_priority)" (click)="subitem.subtask_priority = 1">star</mat-icon>
-                                <mat-icon class="cursor-pointer star" [style]="getStarColor(2, subitem.subtask_priority)" (click)="subitem.subtask_priority = 2">star</mat-icon>
-                                <mat-icon class="cursor-pointer star" [style]="getStarColor(3, subitem.subtask_priority)" (click)="subitem.subtask_priority = 3">star</mat-icon>
-                                <mat-icon class="cursor-pointer star" [style]="getStarColor(4, subitem.subtask_priority)" (click)="subitem.subtask_priority = 4">star</mat-icon>
-                                <mat-icon class="cursor-pointer star" [style]="getStarColor(5, subitem.subtask_priority)" (click)="subitem.subtask_priority = 5">star</mat-icon>
+                                <mat-icon class="cursor-pointer star" [style]="getStarColor(1, subitem.subtask_priority)" (click)="subitem.subtask_priority = 1; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer star" [style]="getStarColor(2, subitem.subtask_priority)" (click)="subitem.subtask_priority = 2; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer star" [style]="getStarColor(3, subitem.subtask_priority)" (click)="subitem.subtask_priority = 3; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer star" [style]="getStarColor(4, subitem.subtask_priority)" (click)="subitem.subtask_priority = 4; setNewTasks()">star</mat-icon>
+                                <mat-icon class="cursor-pointer star" [style]="getStarColor(5, subitem.subtask_priority)" (click)="subitem.subtask_priority = 5; setNewTasks()">star</mat-icon>
                             </div>
                         </td>
                         <td style="width: 2.2rem">
@@ -146,7 +142,7 @@
                             </button>
                         </td>
                         <td class="status_col">
-                            <select [(ngModel)]="this.newTask.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(this.newTask.task_status)" matTooltip="Status">
+                            <select [(ngModel)]="this.newTask.task_status" [ngModelOptions]="{ updateOn: 'change' }" (ngModelChange)="setNewTasks()" [style]="'border-radius: 5px; background-color: ' + getStatusColor(this.newTask.task_status)" matTooltip="Status">
                                 <option value="None">None</option>
                                 <option value="Active">Active</option>
                                 <option value="In Progress">In Progress</option>
@@ -174,10 +170,10 @@
                             <div style="width: 2.2rem" class="flex items-center justify-center"> 
                                 |
                             </div>
-                            <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" style="background-color: hsl(220, 25%, 20%); border-radius: 5px;"></textarea>
+                            <textarea placeholder="Describe a new subtask here" [(ngModel)]="subitem.subtask_description" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" style="background-color: hsl(220, 25%, 20%); border-radius: 5px;"></textarea>
                         </td>
                         <td class="status_col">
-                            <select [(ngModel)]="subitem.subtask_status" [style]="'background-color: ' + getStatusColor(subitem.subtask_status)">
+                            <select [(ngModel)]="subitem.subtask_status" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" [style]="'background-color: ' + getStatusColor(subitem.subtask_status)">
                                 <option value="None">None</option>
                                 <option value="Active">Active</option>
                                 <option value="In Progress">In Progress</option>
@@ -209,10 +205,7 @@
                     <tr>
                         <td class="flex gap-x-0.5 w-full">
                             <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: ' + getSideColor(item.task_id)"></div>
-                            <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
-                            <button style="width: 2.2rem" (click)="newSubtask(item)">
-                                <mat-icon style="background-color: hsl(220, 25%, 15%); display: flex; justify-content: center; align-items: center; height: 2.2rem; width: 2.2rem;; border-radius: 5px;" matTooltip="Add a subtask">add_circle_outline</mat-icon>
-                            </button>
+                            <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
                         </td>
                         <td class="status_col">
                             <select [(ngModel)]="item.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">

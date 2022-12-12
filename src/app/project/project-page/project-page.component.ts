@@ -2,19 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../project.service';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/app/services/socket.service';
-import { debounceTime } from 'rxjs/operators';
+import { trigger, transition, style, animate, keyframes, state } from '@angular/animations';
 
 @Component({
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
-  styleUrls: ['./project-page.component.css']
+  styleUrls: ['./project-page.component.css'],
+  animations: [
+    trigger('listAnimation', [
+      state('void', style({ opacity: 0, transform: 'translateY(-50%)' })),
+      transition('void => *', [
+        animate('250ms cubic-bezier(0.175, 0.885, 0.32, 1.275)', keyframes([
+          style({ offset: 0, opacity: 0, transform: 'translateY(-50%)' }),
+          style({ offset: 0.25, opacity: 0.25, transform: 'translateY(-25%)' }),
+          style({ offset: 0.75, opacity: 0.75, transform: 'translateY(25%)' }),
+          style({ offset: 1, opacity: 1, transform: 'translateY(0)' })
+        ]))
+      ]),
+      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('* => void', [
+        animate('250ms cubic-bezier(0.175, 0.885, 0.32, 1.275)', keyframes([
+          style({ offset: 0, opacity: 1, transform: 'translateY(0)' }),
+          style({ offset: 0.25, opacity: 0.75, transform: 'translateY(-25%)' }),
+          style({ offset: 0.75, opacity: 0.25, transform: 'translateY(-50%)' }),
+          style({ offset: 1, opacity: 0, transform: 'translateY(-50%)' })
+        ]))
+      ])
+    ])
+    ]
 })
 export class ProjectPageComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private route: ActivatedRoute,
     private socketService: SocketService
-  ) { }
+  ) {  }
 
   loading: boolean = true;
 
@@ -99,8 +121,27 @@ export class ProjectPageComponent implements OnInit {
     }
     this.socketService.listen().subscribe((data: any) => {
       if(data){
-        this.taskItems = data.filter((task: any) => task.task_status !== 'Complete')
-        this.completedItems = data.filter((task: any) => task.task_status === 'Complete')
+        let incompleteTasks = data.filter((task: any) => task.task_status !== 'Complete')
+        let completedTasks = data.filter((task: any) => task.task_status === 'Complete')
+
+        if(!this.taskItems){
+          this.taskItems = incompleteTasks
+        }
+        if(!this.completedItems){
+          this.completedItems = completedTasks
+        }
+
+        incompleteTasks.forEach((task: any) => {
+          if(!this.taskItems?.some((newTask: any) => newTask.task_id === task.task_id)){
+            this.taskItems?.push(task)
+          }
+        })
+
+        completedTasks.forEach((task: any) => {
+          if(!this.completedItems?.some((newTask: any) => newTask.task_id === task.task_id)){
+            this.completedItems?.push(task)
+          }
+        })
       }
     })
     this.socketService.emit('tasks', this.id)
@@ -114,10 +155,16 @@ export class ProjectPageComponent implements OnInit {
   setNewTasks(){
     if(this.getNewTaskActivated()){
       this.newTask.task_id = Math.random().toString(36).slice(2, 9)
-      this.taskItems?.push(this.newTask)
+      if(this.newTask.task_status === 'Complete'){
+        this.completedItems?.push(this.newTask)
+      } else {
+        this.taskItems?.push(this.newTask)
+      }
       this.resetNewTask()
     }
-    this.socketService.setNewTasks(this.id, this.taskItems)
+    if(this.taskItems && this.completedItems){
+      this.socketService.setNewTasks(this.id, [...this.taskItems, ...this.completedItems])
+    }
   }
   
   getStatusColor(status: string){
@@ -137,7 +184,7 @@ export class ProjectPageComponent implements OnInit {
   }
 
   getNewTaskActivated(){
-    if(this.newTask.task_description !== '' || this.newTask.task_status !== 'None'){
+    if(this.newTask.task_description !== ''){
       return true
     }else{
       return false
@@ -180,7 +227,10 @@ export class ProjectPageComponent implements OnInit {
 
   deleteTask(id: string){
     const newTaskItems: any = this.taskItems?.filter((task: any) => task.task_id !== id)
+    const newCompletedItems: any = this.completedItems?.filter((task: any) => task.task_id !== id)
     this.taskItems = newTaskItems
+    this.completedItems = newCompletedItems
+    this.setNewTasks()
   }
 
   deleteSubTask(task_id: any, id: string){
@@ -205,5 +255,8 @@ export class ProjectPageComponent implements OnInit {
     }
     let hue = Math.abs(hash % 360);
     return `hsl(${hue}, 100%, 50%)`;
+  }
+
+  updateOnlyOnBlur(task: any){console.log('test')
   }
 }
