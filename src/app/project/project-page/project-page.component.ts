@@ -199,7 +199,6 @@ export class ProjectPageComponent implements OnInit {
   }
 
   newSubtask(task: any){
-    console.log('new subtask')
     if(task.subtasks){
       task.subtasks.push({
         subtask_id: '',
