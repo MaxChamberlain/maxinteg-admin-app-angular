@@ -10,22 +10,16 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   styleUrls: ['./project-page.component.css'],
   animations: [
     trigger('listAnimation', [
-      transition(':enter, * => 0, * => -1', []),
-      transition(':increment', [
+      transition('* => *', [
         query(':enter', [
-          style({ opacity: 0, width: '0px', transform: 'scale(0.8)' }),
-          stagger(50, [
-            animate('300ms ease-out', style({ opacity: 1, width: '*', transform: 'scale(1)' })),
-          ]),
-        ], { optional: true })
-      ]),
-      transition(':decrement', [
+          style({ opacity: 0, transform: 'translateY(-50px)' }),
+          stagger('50ms', animate('250ms ease-in', style({ opacity: 1, transform: 'translateY(10px)', '-ms-transform': 'translateY(10px)', '-moz-transform': 'translateY(10px)', '-webkit-transform': 'translateY(10px)', '-o-transform': 'translateY(10px)' })))
+        ], { optional: true }),
         query(':leave', [
-          stagger(50, [
-            animate('300ms ease-out', style({ opacity: 0, width: '0px', transform: 'scale(0.8)' })),
-          ]),
-        ])
-      ]),
+          style({ transform: 'translateY(0px)' }),
+          stagger('50ms', animate('150ms ease-out', style({ opacity: 0, transform: 'translateY(-50px)', '-ms-transform': 'translateY(-50px)', '-moz-transform': 'translateY(-50px)', '-webkit-transform': 'translateY(-50px)', '-o-transform': 'translateY(-50px)' })))
+        ], { optional: true })
+      ])      
     ])
   ]
 })
@@ -35,6 +29,8 @@ export class ProjectPageComponent implements OnInit {
     private route: ActivatedRoute,
     private socketService: SocketService
   ) {  }
+
+  itemRemovedIndex: any = -1;
 
   loading: boolean = true;
 
@@ -227,6 +223,7 @@ export class ProjectPageComponent implements OnInit {
   }
 
   deleteTask(id: string){
+    this.itemRemovedIndex = this.taskItems?.findIndex((task: any) => task.task_id === id)
     const newTaskItems: any = this.taskItems?.filter((task: any) => task.task_id !== id)
     const newCompletedItems: any = this.completedItems?.filter((task: any) => task.task_id !== id)
     this.taskItems = newTaskItems
@@ -257,8 +254,8 @@ export class ProjectPageComponent implements OnInit {
     let hue = Math.abs(hash % 360);
     return `hsl(${hue}, 100%, 50%)`;
   }
-  
-  getExists(id: string){
-    return this.taskItems?.some((task: any) => task.task_id === id)
+
+  getItemInstance(index: number, item: any){
+    return item.task_id
   }
 }

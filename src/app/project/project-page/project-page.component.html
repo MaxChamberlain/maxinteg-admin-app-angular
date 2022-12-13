@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 
-                <tbody *ngFor="let item of taskItems; let i as index;">
+                <tbody *ngFor="let item of taskItems; let i as index; trackBy: getItemInstance" class="movement__animated">
                     <tr>
                         <td class="flex gap-x-0.5 w-full">
                             <div [style]="'height: 2.2rem; width: 5px; filter: brightness(2); background-color: ' + getSideColor(item.task_id)"></div>
@@ -218,7 +218,7 @@
                             <textarea placeholder="Describe a new task here" [(ngModel)]="item.task_description" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="setNewTasks()" style="background-color: hsl(220, 25%, 15%); border-radius: 0 5px 5px 0;"></textarea>
                         </td>
                         <td class="status_col">
-                            <select [(ngModel)]="item.task_status" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">
+                            <select [(ngModel)]="item.task_status"[ngModelOptions]="{ updateOn: 'change' }" (ngModelChange)="setNewTasks()" [style]="'border-radius: 5px; background-color: ' + getStatusColor(item.task_status)" matTooltip="Status">
                                 <option value="None">None</option>
                                 <option value="Active">Active</option>
                                 <option value="In Progress">In Progress</option>

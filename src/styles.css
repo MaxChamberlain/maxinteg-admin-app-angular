@@ -68,3 +68,7 @@ td{
 .status_col{
     max-width: 2rem;
 }
+
+.movement__animated{
+    animation: movement 0.5s;
+}
