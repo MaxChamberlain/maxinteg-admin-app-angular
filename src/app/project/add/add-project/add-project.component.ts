@@ -55,6 +55,7 @@ export class AddProjectComponent {
       project_back_end_hosting_url: this.addProjectForm.value.project_back_end_hosting_url,
       project_front_end_hosting_provider: this.addProjectForm.value.project_front_end_hosting_provider,
       project_back_end_hosting_provider: this.addProjectForm.value.project_back_end_hosting_provider,
+      authorized_users: [],
     }).subscribe((data: any) => {
       console.log(data);
     });

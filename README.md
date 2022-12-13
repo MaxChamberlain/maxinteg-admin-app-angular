@@ -48,4 +48,4 @@ go build
 node server.js
 ```
 
-5. Visit the application in your browser at `http://192.168.4.227:3000`
+5. Visit the application in your browser at `http://localhost:3000`

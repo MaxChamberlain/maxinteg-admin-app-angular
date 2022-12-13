@@ -37,6 +37,7 @@ export class SocketService {
 
 	// emit event
 	emit(eventName: string, data: any) {
+		console.log('emitting event', eventName, data);
 		this.socket.emit(eventName, data);
 	}
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../project.service';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/app/services/socket.service';
-import { trigger, transition, style, animate, keyframes, state } from '@angular/animations';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 @Component({
   selector: 'app-project-page',
@@ -10,26 +10,24 @@ import { trigger, transition, style, animate, keyframes, state } from '@angular/
   styleUrls: ['./project-page.component.css'],
   animations: [
     trigger('listAnimation', [
-      state('void', style({ opacity: 0, transform: 'translateY(-50%)' })),
-      transition('void => *', [
-        animate('250ms cubic-bezier(0.175, 0.885, 0.32, 1.275)', keyframes([
-          style({ offset: 0, opacity: 0, transform: 'translateY(-50%)' }),
-          style({ offset: 0.25, opacity: 0.25, transform: 'translateY(-25%)' }),
-          style({ offset: 0.75, opacity: 0.75, transform: 'translateY(25%)' }),
-          style({ offset: 1, opacity: 1, transform: 'translateY(0)' })
-        ]))
+      transition(':enter, * => 0, * => -1', []),
+      transition(':increment', [
+        query(':enter', [
+          style({ opacity: 0, width: '0px', transform: 'scale(0.8)' }),
+          stagger(50, [
+            animate('300ms ease-out', style({ opacity: 1, width: '*', transform: 'scale(1)' })),
+          ]),
+        ], { optional: true })
       ]),
-      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
-      transition('* => void', [
-        animate('250ms cubic-bezier(0.175, 0.885, 0.32, 1.275)', keyframes([
-          style({ offset: 0, opacity: 1, transform: 'translateY(0)' }),
-          style({ offset: 0.25, opacity: 0.75, transform: 'translateY(-25%)' }),
-          style({ offset: 0.75, opacity: 0.25, transform: 'translateY(-50%)' }),
-          style({ offset: 1, opacity: 0, transform: 'translateY(-50%)' })
-        ]))
-      ])
+      transition(':decrement', [
+        query(':leave', [
+          stagger(50, [
+            animate('300ms ease-out', style({ opacity: 0, width: '0px', transform: 'scale(0.8)' })),
+          ]),
+        ])
+      ]),
     ])
-    ]
+  ]
 })
 export class ProjectPageComponent implements OnInit {
   constructor(
@@ -119,33 +117,18 @@ export class ProjectPageComponent implements OnInit {
         this.loading = false;
       });
     }
+      
     this.socketService.listen().subscribe((data: any) => {
+      new Date().getTime()
       if(data){
-        let incompleteTasks = data.filter((task: any) => task.task_status !== 'Complete')
-        let completedTasks = data.filter((task: any) => task.task_status === 'Complete')
+        let incompleteTasks = data.filter((task: any) => task && task.task_status !== 'Complete')
+        let completedTasks = data.filter((task: any) => task && task.task_status === 'Complete')
 
-        if(!this.taskItems){
           this.taskItems = incompleteTasks
-        }
-        if(!this.completedItems){
           this.completedItems = completedTasks
-        }
-
-        incompleteTasks.forEach((task: any) => {
-          if(!this.taskItems?.some((newTask: any) => newTask.task_id === task.task_id)){
-            this.taskItems?.push(task)
-          }
-        })
-
-        completedTasks.forEach((task: any) => {
-          if(!this.completedItems?.some((newTask: any) => newTask.task_id === task.task_id)){
-            this.completedItems?.push(task)
-          }
-        })
       }
     })
     this.socketService.emit('tasks', this.id)
-    
   }
 
   emit(event: string, data: any){
@@ -156,31 +139,49 @@ export class ProjectPageComponent implements OnInit {
     if(this.getNewTaskActivated()){
       this.newTask.task_id = Math.random().toString(36).slice(2, 9)
       if(this.newTask.task_status === 'Complete'){
-        this.completedItems?.push(this.newTask)
+        if(this.completedItems){
+          this.completedItems.push(this.newTask)
+        } else {
+          this.completedItems = [this.newTask]
+        }
       } else {
-        this.taskItems?.push(this.newTask)
+        if(this.taskItems){
+          this.taskItems.push(this.newTask)
+        } else {
+          this.taskItems = [this.newTask]
+        }
       }
       this.resetNewTask()
     }
-    if(this.taskItems && this.completedItems){
-      this.socketService.setNewTasks(this.id, [...this.taskItems, ...this.completedItems])
+    if(this.taskItems){
+      if(this.completedItems){
+        this.socketService.setNewTasks(this.id, [...this.taskItems, ...this.completedItems])
+      } else {
+        this.socketService.setNewTasks(this.id, this.taskItems)
+      }
+    }else{
+      console.log('test')
+      if(this.completedItems){
+        this.socketService.setNewTasks(this.id, this.completedItems)
+      }
     }
   }
   
   getStatusColor(status: string){
-    return status ? 
-      status === 'Active' ? 
-          'hsl(100, 110%, 35%)' : 
-        status === 'In Progress' ? 
-          'hsl(35, 110%, 35%)' : 
-        status === 'Awaiting Review' ? 
-          'hsl(45, 110%, 35%)' : 
-        status === 'None' ? 
-          'hsl(220, 25%, 15%)' : 
-        status === 'Complete' ? 
-          'hsl(220, 25%, 15%)' : 
-        'hsl(0, 100%, 60%)' : 
-      'hsl(220, 25%, 15%)'
+    switch(status){
+      case 'Active':
+        return 'hsl(100, 110%, 35%)'
+      case 'In Progress':
+        return 'hsl(35, 110%, 35%)'
+      case 'Awaiting Review':
+        return 'hsl(45, 110%, 35%)'
+      case 'None':
+        return 'hsl(220, 25%, 15%)'
+      case 'Complete':
+        return 'hsl(220, 25%, 15%)'
+      default:
+        return 'hsl(0, 100%, 60%)'
+    }
   }
 
   getNewTaskActivated(){
@@ -256,7 +257,8 @@ export class ProjectPageComponent implements OnInit {
     let hue = Math.abs(hash % 360);
     return `hsl(${hue}, 100%, 50%)`;
   }
-
-  updateOnlyOnBlur(task: any){console.log('test')
+  
+  getExists(id: string){
+    return this.taskItems?.some((task: any) => task.task_id === id)
   }
 }
